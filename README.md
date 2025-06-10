@@ -40,4 +40,42 @@ Model dievaluasi menggunakan metrik **balanced accuracy**, **sensitivity**, dan 
 - **SVM** unggul dalam sensitivity berkat kemampuannya memodelkan batas keputusan non-linear, namun rentan terhadap pencilan.  
 - **Stacking RF-SVM + XGBoost** mencapai kinerja terbaik secara keseluruhan dengan balanced accuracy **0.81**, sensitivity **0.75**, dan specificity **0.88**, memadukan keunggulan kedua base learners sekaligus meningkatkan robustitas melalui boosting.
 
+## Deskripsi Proyek  
+This portfolio presents a comprehensive study on the **classification modeling** of household food poverty levels using macroeconomic data from West Java Province. The adopted approach involves two major families of methods—Support Vector Machine (SVM) as a distance-based algorithm and Random Forest (RF) as a tree-based ensemble algorithm—along with a hybrid **stacking** technique that integrates RF and SVM predictions using XGBoost as the final estimator. The primary objective is to evaluate the robustness of the models against outliers and varying simulation conditions by comparing the performance of individual models and the ensemble approach.
 
+## Repository Structure   
+- `src/`  
+  Python modules for preprocessing, implementing SVM, Random Forest, and the stacking pipeline (RF + SVM → XGBoost).  
+- `notebooks/`  
+  Jupyter Notebooks for EDA analysis, RFE feature selection, handling imbalance using ADASYN, and result visualization.  
+- `reports/`  
+  Summary of graphs and tables comparing metrics (balanced accuracy, sensitivity, specificity) across simulation scenarios. 
+- `requirements.txt`  
+  Python dependencies (scikit-learn, xgboost, imbalanced-learn, pandas, matplotlib, etc).
+
+## Methodology
+
+### 1. Data Preprocessing 
+The 2023 SUSENAS BPS data was combined with macroeconomic variables of West Java Province. The stages include handling missing/outlier values, scale normalization (StandardScaler), and skewness reduction using Box-Cox transformation. Extreme outliers were identified using Z-score (threshold ±2.5) and removed to maintain model integrity.
+
+### 2. Data Imbalance Handling 
+**ADASYN** (Adaptive Synthetic Sampling) was applied to the training data to balance the proportion of the minority class (food-poor households) and the majority class, enabling the model to learn representative patterns from both classes.
+
+### 3. Feature Selection  
+**Recursive Feature Elimination (RFE)** with base estimators (RF or SVM) was used to select the most informative subset of features—including calorie consumption, food expenditure, and macroeconomic indicators—to improve model efficiency and interpretability.
+
+### 4. Pengembangan Model  
+- **Random Forest (RF)**  
+  Trained using grid search for `n_estimators`, `max_depth`, and `max_features` followed by stratified K-fold CV (k=10).  
+- **Support Vector Machine (SVM)**  
+  Used the RBF kernel, with `C` and `gamma` optimized via grid search and stratified K-fold CV (k=10).  
+- **Stacking RF-SVM + XGBoost**  
+  Probabilistic predictions from RF and SVM were combined as input features to XGBoost as the final estimator. XGBoost hyperparameters (`eta`, `max_depth`, `subsample`) were optimized and integrated into the stacking pipeline using stratified K-fold CV.
+
+### 5. Evaluation and Scenario Simulation 
+The models were evaluated using **balanced accuracy**, **sensitivity**, and **specificity** on the test data. Scenario simulations included high inflation fluctuations, exchange rate shocks, and changes in GDP per capita to assess model robustness against macroeconomic variability.
+
+## Hasil & Temuan Utama  
+- **RF** showed high stability against outliers but had lower sensitivity in detecting food-poor households.
+- **SVM** excelled in sensitivity due to its ability to model non-linear decision boundaries, but it was vulnerable to outliers.  
+- **Stacking RF-SVM + XGBoost** achieved the best overall performance with balanced accuracy **0.81**, sensitivity **0.75**, and specificity **0.88**, combining the strengths of both base learners while enhancing robustness through boosting.
